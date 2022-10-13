@@ -61,7 +61,7 @@ def get_weather(region):
     return weather, temp, wind_dir
  
  
-def get_birthday(birthday, year, today):
+ def get_birthday(birthday, year, today):
     birthday_year = birthday.split("-")[0]
     # 判断是否为农历生日
     if birthday_year[0] == "r":
