@@ -102,8 +102,7 @@ def get_birthday(birthday, year, today):
     return birth_day
    
    
-   
-def get_birthday(birthday, year, today):
+   def get_birthday(birthday, year, today):
     birthday_year = birthday.split("-")[0]
     # 判断是否为农历生日
     if birthday_year[0] == "r":
@@ -142,8 +141,8 @@ def get_birthday(birthday, year, today):
         birth_date = year_date
         birth_day = str(birth_date.__sub__(today)).split(" ")[0]
     return birth_day
- 
- 
+   
+   
 def get_ciba():
     url = "http://open.iciba.com/dsapi/"
     headers = {
@@ -155,6 +154,9 @@ def get_ciba():
     note_en = r.json()["content"]
     note_ch = r.json()["note"]
     return note_ch, note_en
+   
+   
+   
  
  
 def send_message(to_user, access_token, region_name, weather, temp, wind_dir, note_ch, note_en):
@@ -211,7 +213,7 @@ def send_message(to_user, access_token, region_name, weather, temp, wind_dir, no
                 "value": note_en,
                 "color": get_color()
             },
-          "note_en": {
+         "note_en1": {
                 "value": note_en,
                 "color": get_color()
             },
@@ -228,6 +230,18 @@ def send_message(to_user, access_token, region_name, weather, temp, wind_dir, no
             birthday_data = "今天{}生日哦，祝{}生日快乐！".format(value["name"], value["name"])
         else:
             birthday_data = "距离{}的生日还有{}天".format(value["name"], birth_day)
+        # 将生日数据插入data
+        data["data"][key] = {"value": birthday_data, "color": get_color()}
+    headers = {
+        'Content-Type': 'application/json',
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) '
+                      'AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36'
+    }
+    birth_day = get_birthday(value["birthday"], year, today)
+        if birth_day == 0:
+            birthday_data = "今天可能要来大姨妈，要注意了！".format(value["name"], value["name"])
+        else:
+            birthday_data = "距离的大姨妈还有{}天".format(value["name"], birth_day)
         # 将生日数据插入data
         data["data"][key] = {"value": birthday_data, "color": get_color()}
     headers = {
@@ -270,6 +284,7 @@ if __name__ == "__main__":
     weather, temp, wind_dir = get_weather(region)
     note_ch = config["note_ch"]
     note_en = config["note_en"]
+    note_en1 = config["note_en1"]
     if note_ch == "" and note_en == "":
         # 获取词霸每日金句
         note_ch, note_en = get_ciba()
